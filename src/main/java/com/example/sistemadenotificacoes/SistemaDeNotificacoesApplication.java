@@ -1,5 +1,7 @@
 package com.example.sistemadenotificacoes;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvEntry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SistemaDeNotificacoesApplication {
 
     public static void main(String[] args) {
+        loadEnv();
         SpringApplication.run(SistemaDeNotificacoesApplication.class, args);
+    }
+
+    private static void loadEnv() {
+        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+        for (DotenvEntry entry : dotenv.entries()) {
+            System.setProperty(entry.getKey(), entry.getValue());
+        }
     }
 
 }
