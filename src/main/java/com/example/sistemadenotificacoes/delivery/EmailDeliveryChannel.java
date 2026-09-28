@@ -1,5 +1,6 @@
 package com.example.sistemadenotificacoes.delivery;
 
+import com.example.sistemadenotificacoes.domain.ChannelType;
 import com.example.sistemadenotificacoes.domain.Notification;
 import com.example.sistemadenotificacoes.domain.Recipient;
 import com.example.sistemadenotificacoes.domain.RecipientType;
@@ -21,18 +22,23 @@ public class EmailDeliveryChannel implements DeliveryChannel{
     }
 
     @Override
+    public boolean supports(ChannelType channelType) {
+        return ChannelType.EMAIL.equals(channelType);
+    }
+
+    @Override
     public void send(Notification notification){
-        List<String> to = new ArrayList<String>();
-        List<String> cc = new ArrayList<String>();
-        List<String> bcc = new ArrayList<String>();
+        List<String> to = new ArrayList<>();
+        List<String> cc = new ArrayList<>();
+        List<String> bcc = new ArrayList<>();
 
         for (Recipient recipient : notification.getRecipients()){
             if (recipient.getType().equals(RecipientType.TO)){
-                to.add(recipient.getAddress());
+                to.add(recipient.getDestination());
             } else if (recipient.getType().equals(RecipientType.CC)){
-                cc.add(recipient.getAddress());
+                cc.add(recipient.getDestination());
             } else if (recipient.getType().equals(RecipientType.BCC)){
-                bcc.add(recipient.getAddress());
+                bcc.add(recipient.getDestination());
             }
         }
 

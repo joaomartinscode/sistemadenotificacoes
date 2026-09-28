@@ -22,7 +22,7 @@ public class Notification {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "notification_id")
-    private List<Recipient> recipients = new ArrayList<Recipient>();
+    private List<Recipient> recipients;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
@@ -34,7 +34,7 @@ public class Notification {
     private String failureReason;
 
     public Notification() {
-        this.recipients = new ArrayList<Recipient>();
+        this.recipients = new ArrayList<>();
         this.status = DeliveryStatus.CREATED;
         this.createdAt = LocalDateTime.now();
     }
@@ -43,7 +43,7 @@ public class Notification {
         this.subject = subject;
         this.content = content;
         this.channelType = channelType;
-        this.recipients = new ArrayList<Recipient>();
+        this.recipients = new ArrayList<>();
         this.status = DeliveryStatus.CREATED;
         this.createdAt = LocalDateTime.now();
     }

@@ -9,7 +9,7 @@ public class Recipient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String address;
+    private String destination;
 
     @Enumerated(EnumType.STRING)
     private RecipientType type;
@@ -17,8 +17,8 @@ public class Recipient {
     public Recipient() {
     }
 
-    public Recipient(String address, RecipientType type) {
-        this.address = address;
+    public Recipient(String destination, RecipientType type) {
+        this.destination = destination;
         this.type = type;
     }
 
@@ -30,12 +30,12 @@ public class Recipient {
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public RecipientType getType() {

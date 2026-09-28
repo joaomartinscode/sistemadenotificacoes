@@ -27,7 +27,7 @@
     <tbody>
     <tr th:each="r : ${notification.recipients}">
         <td th:text="${r.type}">TO</td>
-        <td th:text="${r.address}">destinatario@exemplo.pt</td>
+        <td th:text="${r.destination}">destinatario@exemplo.pt</td>
     </tr>
     </tbody>
 </table>

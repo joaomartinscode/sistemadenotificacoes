@@ -9,6 +9,13 @@
 
 <form th:action="@{/notifications}" method="post">
     <div>
+        <label for="channelType">Canal de Envio:</label><br>
+        <select id="channelType" name="channelType">
+            <option th:each="ch : ${channels}" th:value="${ch}" th:text="${ch}" th:selected="${ch.name() == 'EMAIL'}">EMAIL</option>
+        </select>
+    </div>
+    <br>
+    <div>
         <label for="to">Para (TO):</label><br>
         <input type="text" id="to" name="to" required>
     </div>
