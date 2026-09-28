@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nova Notificacao</title>
+</head>
+<body>
+<h1>Nova Notificação</h1>
+
+<form th:action="@{/notifications}" method="post">
+    <div>
+        <label for="to">Para (TO):</label><br>
+        <input type="text" id="to" name="to" required>
+    </div>
+    <br>
+    <div>
+        <label for="cc">Com Conhecimento (CC):</label><br>
+        <input type="text" id="cc" name="cc">
+    </div>
+    <br>
+    <div>
+        <label for="bcc">Com Conhecimento Oculto (BCC):</label><br>
+        <input type="text" id="bcc" name="bcc">
+    </div>
+    <br>
+    <div>
+        <label for="subject">Assunto:</label><br>
+        <input type="text" id="subject" name="subject" required>
+    </div>
+    <br>
+    <div>
+        <label for="content">Conteúdo:</label><br>
+        <textarea id="content" name="content" rows="6" cols="40" required></textarea>
+    </div>
+    <br>
+    <button type="submit">Enviar</button>
+    <a th:href="@{/notifications}">Cancelar</a>
+</form>
+</body>
+</html>
