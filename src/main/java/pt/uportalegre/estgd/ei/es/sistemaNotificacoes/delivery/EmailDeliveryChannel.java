@@ -1,9 +1,9 @@
-package com.example.sistemadenotificacoes.delivery;
+package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.delivery;
 
-import com.example.sistemadenotificacoes.domain.ChannelType;
-import com.example.sistemadenotificacoes.domain.Notification;
-import com.example.sistemadenotificacoes.domain.Recipient;
-import com.example.sistemadenotificacoes.domain.RecipientType;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Notification;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Recipient;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.RecipientType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,12 +14,9 @@ import java.util.List;
 
 @Component
 public class EmailDeliveryChannel implements DeliveryChannel{
-    private final JavaMailSender mailSender;
 
     @Autowired
-    public EmailDeliveryChannel(JavaMailSender mailSender){
-        this.mailSender = mailSender;
-    }
+    private JavaMailSender mailSender;
 
     @Override
     public boolean supports(ChannelType channelType) {

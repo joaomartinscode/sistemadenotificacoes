@@ -1,4 +1,4 @@
-package com.example.sistemadenotificacoes;
+package pt.uportalegre.estgd.ei.es.sistemaNotificacoes;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import io.github.cdimascio.dotenv.DotenvEntry;

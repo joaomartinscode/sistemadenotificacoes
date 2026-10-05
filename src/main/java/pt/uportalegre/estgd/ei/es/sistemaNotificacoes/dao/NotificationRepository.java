@@ -1,6 +1,6 @@
-package com.example.sistemadenotificacoes.dao;
+package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dao;
 
-import com.example.sistemadenotificacoes.domain.Notification;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Notification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 

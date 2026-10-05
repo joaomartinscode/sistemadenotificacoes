@@ -1,4 +1,4 @@
-package com.example.sistemadenotificacoes.domain;
+package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain;
 
 import jakarta.persistence.*;
 
@@ -9,9 +9,11 @@ public class Recipient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String destination;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RecipientType type;
 
     public Recipient() {

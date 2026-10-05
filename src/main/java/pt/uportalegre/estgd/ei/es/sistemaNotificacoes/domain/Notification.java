@@ -1,4 +1,4 @@
-package com.example.sistemadenotificacoes.domain;
+package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain;
 
 import jakarta.persistence.*;
 
@@ -13,11 +13,14 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false)
     private String subject;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ChannelType channelType;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -25,12 +28,16 @@ public class Notification {
     private List<Recipient> recipients;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private DeliveryStatus status;
 
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "sent_at")
     private LocalDateTime sentAt;
 
+    @Column(name = "failure_reason")
     private String failureReason;
 
     public Notification() {
@@ -46,24 +53,6 @@ public class Notification {
         this.recipients = new ArrayList<>();
         this.status = DeliveryStatus.CREATED;
         this.createdAt = LocalDateTime.now();
-    }
-
-    public void addRecipient(Recipient recipient) {
-        if (recipient != null) {
-            this.recipients.add(recipient);
-        }
-    }
-
-    public void markSent() {
-        this.status = DeliveryStatus.SENT;
-        this.sentAt = LocalDateTime.now();
-        this.failureReason = null;
-    }
-
-    public void markFailed(String failureReason) {
-        this.status = DeliveryStatus.FAILED;
-        this.sentAt = null;
-        this.failureReason = failureReason;
     }
 
     public Integer getId() {
