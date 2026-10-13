@@ -13,7 +13,7 @@ public class SistemaDeNotificacoesApplication {
         SpringApplication.run(SistemaDeNotificacoesApplication.class, args);
     }
 
-    private static void loadEnv() {
+    public static void loadEnv() {
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         for (DotenvEntry entry : dotenv.entries()) {
             System.setProperty(entry.getKey(), entry.getValue());

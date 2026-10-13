@@ -24,37 +24,38 @@ public class EmailDeliveryChannel implements DeliveryChannel{
     }
 
     @Override
-    public void send(Notification notification){
-        List<String> to = new ArrayList<>();
-        List<String> cc = new ArrayList<>();
-        List<String> bcc = new ArrayList<>();
-
-        for (Recipient recipient : notification.getRecipients()){
-            if (recipient.getType().equals(RecipientType.TO)){
-                to.add(recipient.getDestination());
-            } else if (recipient.getType().equals(RecipientType.CC)){
-                cc.add(recipient.getDestination());
-            } else if (recipient.getType().equals(RecipientType.BCC)){
-                bcc.add(recipient.getDestination());
-            }
-        }
-
+    public void send(Notification notification) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject(notification.getSubject());
+        String subject = notification.getSubject();
+        message.setSubject(subject != null ? subject : "");
         message.setText(notification.getContent());
 
-        if(!to.isEmpty()){
-            message.setTo(to.toArray(new String[0]));
-        }
+        String[] to = getRecipientsByType(notification, RecipientType.TO);
+        String[] cc = getRecipientsByType(notification, RecipientType.CC);
+        String[] bcc = getRecipientsByType(notification, RecipientType.BCC);
 
-        if(!cc.isEmpty()){
-            message.setCc(cc.toArray(new String[0]));
+        if (to.length > 0) {
+            message.setTo(to);
         }
-
-        if(!bcc.isEmpty()){
-            message.setBcc(bcc.toArray(new String[0]));
+        if (cc.length > 0) {
+            message.setCc(cc);
+        }
+        if (bcc.length > 0) {
+            message.setBcc(bcc);
         }
 
         mailSender.send(message);
+    }
+
+    private String[] getRecipientsByType(Notification notification, RecipientType type) {
+        List<String> result = new ArrayList<>();
+        if (notification.getRecipients() != null) {
+            for (Recipient r : notification.getRecipients()) {
+                if (r.getType() == type) {
+                    result.add(r.getDestination());
+                }
+            }
+        }
+        return result.toArray(new String[0]);
     }
 }

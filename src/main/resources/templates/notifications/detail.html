@@ -10,9 +10,17 @@
 <p><strong>Assunto:</strong> <span th:text="${notification.subject}">Assunto</span></p>
 <p><strong>Canal:</strong> <span th:text="${notification.channelType}">EMAIL</span></p>
 <p><strong>Estado:</strong> <span th:text="${notification.status}">SENT</span></p>
-<p><strong>Data Criação:</strong> <span th:text="${notification.createdAt}">Data</span></p>
-<p th:if="${notification.sentAt}"><strong>Data Envio:</strong> <span th:text="${notification.sentAt}">Data</span></p>
+<p><strong>Data Criação:</strong> <span th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm:ss')}">13/10/2026 12:23:06</span></p>
+<p th:if="${notification.sentAt}"><strong>Data Envio:</strong> <span th:text="${#temporals.format(notification.sentAt, 'dd/MM/yyyy HH:mm:ss')}">13/10/2026 12:23:09</span></p>
 <p th:if="${notification.failureReason}"><strong>Motivo Falha:</strong> <span th:text="${notification.failureReason}">Erro</span></p>
+<div th:if="${notification.payload != null and !notification.payload.isEmpty()}">
+    <p><strong>Metadados Adicionais:</strong></p>
+    <ul>
+        <li th:each="entry : ${notification.payload}">
+            <strong th:text="${entry.key}">Chave</strong>: <span th:text="${entry.value}">Valor</span>
+        </li>
+    </ul>
+</div>
 <p><strong>Conteúdo:</strong></p>
 <pre th:text="${notification.content}"></pre>
 

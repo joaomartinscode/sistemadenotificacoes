@@ -1,13 +1,15 @@
 package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.controllers;
 
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.EmailNotificationForm;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.EmailNotificationRequestDTO;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.NotificationDTO;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.NoSuchElementException;
 
 @Controller
 @RequestMapping("/notifications")
@@ -30,21 +32,20 @@ public class NotificationController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Integer id, Model model) {
-        NotificationDTO notification = notificationService.findById(id);
-
-        if (notification == null) {
+        try {
+            NotificationDTO notification = notificationService.findById(id);
+            model.addAttribute("notification", notification);
+            return "notifications/detail";
+        } catch (NoSuchElementException e) {
             return "redirect:/notifications";
         }
-
-        model.addAttribute("notification", notification);
-        return "notifications/detail";
     }
 
     @PostMapping("/emailSend")
-    public String create(@ModelAttribute EmailNotificationForm form) {
-        NotificationDTO dto = form.toDTO();
+    public String create(@ModelAttribute EmailNotificationRequestDTO form) {
+        NotificationDTO dto = form.toNotificationDTO();
         NotificationDTO created = notificationService.processNotification(dto);
 
-        return "redirect:/notifications/" + created.getId();
+        return "redirect:/notifications/" + created.id();
     }
 }

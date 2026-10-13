@@ -5,7 +5,6 @@ import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.delivery.DeliveryChannel;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.DeliveryStatus;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Notification;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Recipient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,16 +36,8 @@ public class NotificationService {
     }
 
     private void submitNotification(Notification notification) {
-        DeliveryChannel channel = getDeliveryChannel(notification.getChannelType());
-
-        if (channel == null) {
-            notification.setStatus(DeliveryStatus.FAILED);
-            notification.setSentAt(null);
-            notification.setFailureReason("Nenhum canal de entrega suporta o tipo: " + notification.getChannelType());
-            return;
-        }
-
         try {
+            DeliveryChannel channel = getDeliveryChannel(notification.getChannelType());
             channel.send(notification);
             notification.setStatus(DeliveryStatus.SENT);
             notification.setSentAt(LocalDateTime.now());
@@ -64,7 +55,7 @@ public class NotificationService {
                 return channel;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Canal de entrega não suportado: " + channelType);
     }
 
     @Transactional
@@ -79,10 +70,8 @@ public class NotificationService {
 
     @Transactional
     public NotificationDTO findById(Integer id) {
-        Notification notification = notificationRepository.findById(id).orElse(null);
-        if (notification != null) {
-            return NotificationDTO.fromEntity(notification);
-        }
-        return null;
+        Notification notification = notificationRepository.findById(id).orElseThrow();
+        return NotificationDTO.fromEntity(notification);
     }
 }
+

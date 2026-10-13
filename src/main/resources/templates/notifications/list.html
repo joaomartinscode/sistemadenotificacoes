@@ -27,7 +27,7 @@
         <td th:text="${n.subject}">Assunto</td>
         <td th:text="${n.channelType}">EMAIL</td>
         <td th:text="${n.status}">SENT</td>
-        <td th:text="${n.createdAt}">2026-09-28</td>
+        <td th:text="${#temporals.format(n.createdAt, 'dd/MM/yyyy HH:mm')}">13/10/2026 12:23</td>
         <td>
             <a th:href="@{/notifications/{id}(id=${n.id})}">Ver Detalhe</a>
         </td>

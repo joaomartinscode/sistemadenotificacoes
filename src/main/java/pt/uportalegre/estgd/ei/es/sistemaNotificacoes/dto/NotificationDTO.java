@@ -7,40 +7,33 @@ import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Recipient;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class NotificationDTO {
-    private Integer id;
-    private String subject;
-    private String content;
-    private ChannelType channelType;
-    private DeliveryStatus status;
-    private LocalDateTime createdAt;
-    private LocalDateTime sentAt;
-    private String failureReason;
-    private List<RecipientDTO> recipients;
-
-    public NotificationDTO() {
-        this.recipients = new ArrayList<>();
+public record NotificationDTO(
+        Integer id,
+        String subject,
+        String content,
+        ChannelType channelType,
+        DeliveryStatus status,
+        LocalDateTime createdAt,
+        LocalDateTime sentAt,
+        String failureReason,
+        List<RecipientDTO> recipients,
+        Map<String, Object> payload
+) {
+    public NotificationDTO {
+        recipients = recipients != null ? List.copyOf(recipients) : List.of();
+        payload = payload != null ? Map.copyOf(payload) : Map.of();
     }
 
-    public NotificationDTO(Integer id, String subject, String content, ChannelType channelType,
-                           DeliveryStatus status, LocalDateTime createdAt, LocalDateTime sentAt,
-                           String failureReason, List<RecipientDTO> recipients) {
-        this.id = id;
-        this.subject = subject;
-        this.content = content;
-        this.channelType = channelType;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.sentAt = sentAt;
-        this.failureReason = failureReason;
-        this.recipients = recipients;
+    public NotificationDTO(String subject, String content, ChannelType channelType, List<RecipientDTO> recipients) {
+        this(null, subject, content, channelType, null, null, null, null, recipients, null);
     }
 
     public static NotificationDTO fromEntity(Notification notification) {
         if (notification == null) return null;
-
         List<RecipientDTO> recipientDTOs = new ArrayList<>();
         if (notification.getRecipients() != null) {
             for (Recipient r : notification.getRecipients()) {
@@ -57,16 +50,21 @@ public class NotificationDTO {
                 notification.getCreatedAt(),
                 notification.getSentAt(),
                 notification.getFailureReason(),
-                recipientDTOs
+                recipientDTOs,
+                notification.getPayload()
         );
     }
 
-    public Notification toEntity(){
-        Notification entity = new Notification(this.subject, this.content, this.channelType);
-
+    public Notification toEntity() {
+        Notification entity = new Notification();
         entity.setId(this.id);
-        if (this.status != null) {
-            entity.setStatus(this.status);
+        entity.setContent(this.content);
+        entity.setChannelType(this.channelType);
+        if (this.status != null) entity.setStatus(this.status);
+
+        entity.setPayload(new HashMap<>(this.payload));
+        if (this.subject != null) {
+            entity.setSubject(this.subject);
         }
 
         List<Recipient> recipientEntities = new ArrayList<>();
@@ -77,77 +75,5 @@ public class NotificationDTO {
         }
         entity.setRecipients(recipientEntities);
         return entity;
-    }
-
-    public List<RecipientDTO> getRecipients() {
-        return recipients;
-    }
-
-    public void setRecipients(List<RecipientDTO> recipients) {
-        this.recipients = recipients;
-    }
-
-    public String getFailureReason() {
-        return failureReason;
-    }
-
-    public void setFailureReason(String failureReason) {
-        this.failureReason = failureReason;
-    }
-
-    public LocalDateTime getSentAt() {
-        return sentAt;
-    }
-
-    public void setSentAt(LocalDateTime sentAt) {
-        this.sentAt = sentAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public DeliveryStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(DeliveryStatus status) {
-        this.status = status;
-    }
-
-    public ChannelType getChannelType() {
-        return channelType;
-    }
-
-    public void setChannelType(ChannelType channelType) {
-        this.channelType = channelType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }
