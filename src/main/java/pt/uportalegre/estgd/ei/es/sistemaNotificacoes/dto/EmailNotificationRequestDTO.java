@@ -1,10 +1,8 @@
 package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto;
 
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.RecipientType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public record EmailNotificationRequestDTO(
         ChannelType channelType,
@@ -16,9 +14,9 @@ public record EmailNotificationRequestDTO(
 ) {
     public NotificationDTO toNotificationDTO() {
         List<RecipientDTO> recipientDTOs = new ArrayList<>();
-        addDestinations(recipientDTOs, this.to, RecipientType.TO);
-        addDestinations(recipientDTOs, this.cc, RecipientType.CC);
-        addDestinations(recipientDTOs, this.bcc, RecipientType.BCC);
+        addDestinations(recipientDTOs, this.to, "TO");
+        addDestinations(recipientDTOs, this.cc, "CC");
+        addDestinations(recipientDTOs, this.bcc, "BCC");
 
         if (recipientDTOs.isEmpty()) {
             throw new IllegalArgumentException("A notificação tem de ter pelo menos um destinatário.");
@@ -32,7 +30,7 @@ public record EmailNotificationRequestDTO(
         );
     }
 
-    private void addDestinations(List<RecipientDTO> list, String rawDestinations, RecipientType type) {
+    private void addDestinations(List<RecipientDTO> list, String rawDestinations, String type) {
         if (rawDestinations == null || rawDestinations.trim().isEmpty()) {
             return;
         }

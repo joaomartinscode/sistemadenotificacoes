@@ -19,5 +19,4 @@ public class SistemaDeNotificacoesApplication {
             System.setProperty(entry.getKey(), entry.getValue());
         }
     }
-
 }

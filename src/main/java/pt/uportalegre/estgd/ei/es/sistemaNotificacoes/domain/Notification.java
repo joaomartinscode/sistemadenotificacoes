@@ -5,10 +5,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class Notification {
@@ -30,7 +27,7 @@ public class Notification {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_id")
-    private List<Recipient> recipients;
+    private List<Recipient> recipients = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -46,10 +43,8 @@ public class Notification {
     private String failureReason;
 
     public Notification() {
-        this.recipients = new ArrayList<>();
         this.status = DeliveryStatus.CREATED;
         this.createdAt = LocalDateTime.now();
-        this.payload = new HashMap<>();
     }
 
     public Notification(String subject, String content, ChannelType channelType) {
@@ -57,15 +52,6 @@ public class Notification {
         this.content = content;
         this.channelType = channelType;
         setSubject(subject);
-    }
-
-    public Notification(Map<String, Object> payload, String content, ChannelType channelType) {
-        this();
-        this.content = content;
-        this.channelType = channelType;
-        if (payload != null) {
-            this.payload = new HashMap<>(payload);
-        }
     }
 
     public Integer getId() {
@@ -89,9 +75,11 @@ public class Notification {
 
     @Transient
     public String getSubject() {
-        if (this.payload != null && this.payload.containsKey("subject")) {
+        if (this.payload != null) {
             Object s = this.payload.get("subject");
-            return s != null ? s.toString() : null;
+            if (s != null) {
+                return s.toString();
+            }
         }
         return null;
     }
@@ -128,7 +116,7 @@ public class Notification {
     }
 
     public void setRecipients(List<Recipient> recipients) {
-        this.recipients = recipients;
+        this.recipients = recipients != null ? recipients : new ArrayList<>();
     }
 
     public DeliveryStatus getStatus() {

@@ -1,38 +1,34 @@
 package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.delivery;
 
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Notification;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Recipient;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.RecipientType;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
-public class EmailDeliveryChannel implements DeliveryChannel{
+public class EmailDeliveryChannel implements DeliveryChannel {
 
     @Autowired
     private JavaMailSender mailSender;
 
     @Override
     public boolean supports(ChannelType channelType) {
-        return ChannelType.EMAIL.equals(channelType);
+        return channelType == ChannelType.EMAIL;
     }
 
     @Override
     public void send(Notification notification) {
         SimpleMailMessage message = new SimpleMailMessage();
-        String subject = notification.getSubject();
-        message.setSubject(subject != null ? subject : "");
+        String subject = notification.getSubject() != null ? notification.getSubject() : "";
+        message.setSubject(subject);
         message.setText(notification.getContent());
 
-        String[] to = getRecipientsByType(notification, RecipientType.TO);
-        String[] cc = getRecipientsByType(notification, RecipientType.CC);
-        String[] bcc = getRecipientsByType(notification, RecipientType.BCC);
+        String[] to = getRecipientsByType(notification, "TO");
+        String[] cc = getRecipientsByType(notification, "CC");
+        String[] bcc = getRecipientsByType(notification, "BCC");
 
         if (to.length > 0) {
             message.setTo(to);
@@ -47,11 +43,13 @@ public class EmailDeliveryChannel implements DeliveryChannel{
         mailSender.send(message);
     }
 
-    private String[] getRecipientsByType(Notification notification, RecipientType type) {
+    private String[] getRecipientsByType(Notification notification, String type) {
         List<String> result = new ArrayList<>();
-        if (notification.getRecipients() != null) {
-            for (Recipient r : notification.getRecipients()) {
-                if (r.getType() == type) {
+        List<Recipient> recipients = notification.getRecipients();
+        if (recipients != null) {
+            for (Recipient r : recipients) {
+                String recipientType = r.getType();
+                if (type.equalsIgnoreCase(recipientType) || ("TO".equalsIgnoreCase(type) && recipientType == null)) {
                     result.add(r.getDestination());
                 }
             }

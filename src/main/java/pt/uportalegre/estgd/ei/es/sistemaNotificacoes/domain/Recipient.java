@@ -12,16 +12,19 @@ public class Recipient {
     @Column(nullable = false)
     private String destination;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private RecipientType type;
+    @Column(name = "type")
+    private String type;
 
     public Recipient() {
     }
 
-    public Recipient(String destination, RecipientType type) {
+    public Recipient(String destination) {
+        this(destination, "TO");
+    }
+
+    public Recipient(String destination, String type) {
         this.destination = destination;
-        this.type = type;
+        this.type = type != null ? type : "TO";
     }
 
     public Integer getId() {
@@ -40,11 +43,11 @@ public class Recipient {
         this.destination = destination;
     }
 
-    public RecipientType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(RecipientType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

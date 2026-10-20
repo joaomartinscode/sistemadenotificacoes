@@ -1,8 +1,7 @@
 package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.controllers;
 
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.EmailNotificationRequestDTO;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.NotificationDTO;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.*;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,13 +20,13 @@ public class NotificationController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("notifications", notificationService.findAll());
-        return "notifications/list";
+        return "list";
     }
 
     @GetMapping("/new")
     public String showForm(Model model) {
         model.addAttribute("channels", ChannelType.values());
-        return "notifications/form";
+        return "form";
     }
 
     @GetMapping("/{id}")
@@ -35,7 +34,7 @@ public class NotificationController {
         try {
             NotificationDTO notification = notificationService.findById(id);
             model.addAttribute("notification", notification);
-            return "notifications/detail";
+            return "detail";
         } catch (NoSuchElementException e) {
             return "redirect:/notifications";
         }

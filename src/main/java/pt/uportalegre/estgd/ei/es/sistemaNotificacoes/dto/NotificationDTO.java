@@ -1,15 +1,9 @@
 package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto;
 
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.DeliveryStatus;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Notification;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Recipient;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public record NotificationDTO(
         Integer id,
@@ -24,8 +18,13 @@ public record NotificationDTO(
         Map<String, Object> payload
 ) {
     public NotificationDTO {
-        recipients = recipients != null ? List.copyOf(recipients) : List.of();
-        payload = payload != null ? Map.copyOf(payload) : Map.of();
+        recipients = recipients != null ? recipients : new ArrayList<>();
+        if (payload == null) {
+            payload = new HashMap<>();
+            if (subject != null) {
+                payload.put("subject", subject);
+            }
+        }
     }
 
     public NotificationDTO(String subject, String content, ChannelType channelType, List<RecipientDTO> recipients) {
@@ -33,7 +32,10 @@ public record NotificationDTO(
     }
 
     public static NotificationDTO fromEntity(Notification notification) {
-        if (notification == null) return null;
+        if (notification == null) {
+            return null;
+        }
+
         List<RecipientDTO> recipientDTOs = new ArrayList<>();
         if (notification.getRecipients() != null) {
             for (Recipient r : notification.getRecipients()) {
@@ -60,7 +62,9 @@ public record NotificationDTO(
         entity.setId(this.id);
         entity.setContent(this.content);
         entity.setChannelType(this.channelType);
-        if (this.status != null) entity.setStatus(this.status);
+        if (this.status != null) {
+            entity.setStatus(this.status);
+        }
 
         entity.setPayload(new HashMap<>(this.payload));
         if (this.subject != null) {

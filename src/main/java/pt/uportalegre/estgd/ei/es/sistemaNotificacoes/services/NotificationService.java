@@ -2,23 +2,21 @@ package pt.uportalegre.estgd.ei.es.sistemaNotificacoes.services;
 
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dao.NotificationRepository;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.delivery.DeliveryChannel;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.DeliveryStatus;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.Notification;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.*;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.NotificationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.NotificationDTO;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class NotificationService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
     @Autowired
     private List<DeliveryChannel> deliveryChannels;
 
@@ -58,20 +56,21 @@ public class NotificationService {
         throw new IllegalArgumentException("Canal de entrega não suportado: " + channelType);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<NotificationDTO> findAll() {
-        List<Notification> notifications = notificationRepository.findAllOrderedByCreatedAtDesc();
-        List<NotificationDTO> notificationDTOS = new ArrayList<>();
-        for (Notification n : notifications) {
-            notificationDTOS.add(NotificationDTO.fromEntity(n));
+        List<NotificationDTO> dtos = new ArrayList<>();
+        for (Notification notification : notificationRepository.findAllOrderedByCreatedAtDesc()) {
+            dtos.add(NotificationDTO.fromEntity(notification));
         }
-        return notificationDTOS;
+        return dtos;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public NotificationDTO findById(Integer id) {
-        Notification notification = notificationRepository.findById(id).orElseThrow();
+        Notification notification = notificationRepository.findById(id).orElse(null);
+        if (notification == null) {
+            throw new NoSuchElementException("Notificação não encontrada com ID: " + id);
+        }
         return NotificationDTO.fromEntity(notification);
     }
 }
-

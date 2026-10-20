@@ -7,14 +7,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.ChannelType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.domain.RecipientType;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.EmailNotificationRequestDTO;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.NotificationDTO;
-import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.RecipientDTO;
+import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.dto.*;
 import pt.uportalegre.estgd.ei.es.sistemaNotificacoes.services.NotificationService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,8 +40,8 @@ class SistemaDeNotificacoesApplicationTests {
         System.out.println("[TESTE 2] Criacao e Persistencia com Mockito");
 
         List<RecipientDTO> destinatarios = new ArrayList<>();
-        destinatarios.add(new RecipientDTO("25856@uportalegre.pt", RecipientType.TO));
-        destinatarios.add(new RecipientDTO("25721@uportalegre.pt", RecipientType.CC));
+        destinatarios.add(new RecipientDTO("25856@uportalegre.pt", "TO"));
+        destinatarios.add(new RecipientDTO("25721@uportalegre.pt", "CC"));
 
         NotificationDTO request = new NotificationDTO(
                 "Teste Automatizado com Mockito",
